@@ -63,7 +63,7 @@
 }
 
 .field {
-    font-family: "Inter", serif;
+    font-family: Inter, serif;
     color: inherit;
     width: 100%;
     outline: none;
@@ -121,7 +121,7 @@
 .icon {
     margin-left: -10px;
 
-    &[data-icon=search] {
+    &[data-icon="search"] {
         background: url('../../assets/images/search.svg') no-repeat center center;
         width: 20px;
         height: 20px;

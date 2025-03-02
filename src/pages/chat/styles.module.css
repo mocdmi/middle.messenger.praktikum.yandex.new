@@ -11,10 +11,9 @@
     grid-area: header;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    place-content: center space-between;
     position: relative;
     border-bottom: 1px solid var(--gray-color);
-    align-content: center;
     column-gap: 10px;
 }
 
@@ -105,4 +104,10 @@
 
 .actionSubmit {
     margin-top: 33px;
+}
+
+.showActionsButtonActive {
+    button {
+        background-color: var(--gray-color);
+    }
 }

@@ -1,4 +1,5 @@
 export { Contacts } from './contacts';
+export { LabelInput } from './label-input';
 export { Input } from './input';
 export { ContactCard } from './contact-card';
 export { Button } from './button';

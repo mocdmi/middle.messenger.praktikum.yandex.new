@@ -1,29 +1,47 @@
-import styles from './styles.module.css';
+import { Block } from '../../core';
+import { InputType } from './types';
 
-// language=Handlebars
-export default `
-<label class="${styles.input}
-                {{#if theme-color}}${styles.themeColor}{{/if}}
-                {{#if theme-blank}}${styles.themeBlank}{{/if}}
-                {{#if theme-default}}${styles.themeDefault}{{/if}}">
-    {{#if label}}<div class="${styles.label}">{{label}}</div>{{/if}}
-    <input class="${styles.field}
-                    {{#if icon}}${styles.withIcon}{{/if}}
-                    {{#if rounded}}${styles.rounded}{{/if}}
-                    {{#if align-right}}${styles.alignRight}{{/if}}"
-        type="{{type}}"
-        name="{{name}}"
-        value="{{#if value}}{{value}}{{/if}}"
-        placeholder=""
-        {{#if required}}required{{/if}}
-    />
-    <span class="${styles.placeholder}
-                {{#if placeholder-center}}${styles.placeholderCenter}{{/if}}
-                {{#if placeholder-right}}${styles.placeholderRight}{{/if}}">
-        {{#if icon}}<span class="${styles.icon}" data-icon="{{icon}}"></span>{{/if}}
-        <span class="${styles.text}">
-            {{placeholder}}
-        </span>
-    </span>
-</label>
-`;
+interface InputAttrs {
+    type: InputType;
+    name: string;
+    value: string;
+    accept?: string;
+    placeholder?: string;
+    required?: boolean;
+    onChange?: (e: Event) => void;
+}
+
+interface InputProps extends InputAttrs {
+    className?: string;
+}
+
+export default class Input extends Block<InputProps, InputAttrs> {
+    constructor(props: InputProps) {
+        super('input', {
+            ...props,
+            attrs: (() => {
+                const attrs: InputAttrs = {
+                    type: props.type,
+                    name: props.name,
+                    value: props.value,
+                    accept: props.accept,
+                    placeholder: props.placeholder,
+                };
+
+                if (props.required) {
+                    attrs.required = true;
+                }
+
+                return attrs;
+            })(),
+            events: {
+                ...(props.onChange ? { change: props.onChange } : {}),
+            },
+        });
+    }
+
+    // language=Handlebars
+    render(): string {
+        return '';
+    }
+}

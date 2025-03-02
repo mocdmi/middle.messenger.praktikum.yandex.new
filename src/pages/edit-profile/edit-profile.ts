@@ -1,22 +1,19 @@
-import styles from './styles.module.css';
+import { Profile } from '../../components';
+import { ProfileContext } from '../../context/types/ProfileContext';
+import { Block } from '../../core';
+import EditForm from './parts/edit-form';
 
-// language=Handlebars
-export default `
-{{#> Profile name=false}}
-<form action="#" method="post">
-    <div class="${styles.detail}">
-        {{#each detail}}
-            <div class="${styles.row}">
-                <div class="${styles.label}">{{label}}</div>
-                <div class="${styles.value}">
-                    {{> Input label=false theme-blank=true align-right=true}}
-                </div>
-            </div>
-        {{/each}}
-    </div>
-    <div class="${styles.save}">
-        {{> Button type="submit" theme-default=true label="Сохранить"}}
-    </div>
-</form>
-{{/Profile}}
-`;
+export default class EditProfilePage extends Block<ProfileContext> {
+    constructor(props: ProfileContext) {
+        super('div', props, {
+            EditProfile: new Profile({
+                Children: new EditForm(props) as Block,
+            }) as Block,
+        });
+    }
+
+    // language=Handlebars
+    render(): string {
+        return '{{{EditProfile}}}';
+    }
+}

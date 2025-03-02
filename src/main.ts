@@ -1,65 +1,72 @@
-import Handlebars from 'handlebars';
-import { chatContext, errorNotFoundContext, errorServerContext, profileContext } from './context';
+import * as context from './context';
+import { Block } from './core';
+import { renderDom } from './core/render-dom';
 import * as Pages from './pages';
-import * as Components from './components';
 import './assets/styles/styles.css';
+import { PageNames } from './types/page-names';
 
-const pageNames = [
-    'chat',
-    'edit-password',
-    'edit-profile',
-    'login',
-    'list',
-    'profile',
-    'sign-in',
-    'server-error',
-    'not-found',
-] as const;
+type PageComponent = new (context?: object) => Block;
 
-type PageNames = (typeof pageNames)[number];
+type PagesConfig = Record<
+    PageNames,
+    {
+        component: PageComponent;
+        context?: object;
+    }
+>;
 
-type PagesConfig = Record<PageNames, {
-    component: typeof Pages[keyof typeof Pages],
-    context?: object,
-}>;
+const pages: PagesConfig = {
+    [PageNames.LOGIN]: { component: Pages.LoginPage as PageComponent },
+    [PageNames.LIST]: { component: Pages.ListPage as PageComponent },
+    [PageNames.CHAT]: { component: Pages.ChatPage as PageComponent, context: context.chatContext },
+    [PageNames.SIGN_IN]: { component: Pages.SignInPage },
 
-const pages: PagesConfig  = {
-    'chat': { component: Pages.ChatPage, context: chatContext},
-    'edit-password': { component: Pages.EditPasswordPage, context: profileContext },
-    'edit-profile': { component: Pages.EditProfilePage, context: profileContext },
-    'login': { component: Pages.LoginPage },
-    'list': { component: Pages.ListPage },
-    'profile': { component: Pages.ProfilePage, context: profileContext },
-    'sign-in': { component: Pages.SignInPage },
-    'server-error': { component: Pages.ErrorPage, context: errorServerContext },
-    'not-found': { component: Pages.ErrorPage, context: errorNotFoundContext },
+    [PageNames.EDIT_PASSWORD]: {
+        component: Pages.EditPasswordPage as PageComponent,
+        context: context.profileContext,
+    },
+
+    [PageNames.EDIT_PROFILE]: {
+        component: Pages.EditProfilePage as PageComponent,
+        context: context.profileContext,
+    },
+
+    [PageNames.PROFILE]: {
+        component: Pages.ProfilePage as PageComponent,
+        context: context.profileContext,
+    },
+
+    [PageNames.SERVER_ERROR]: {
+        component: Pages.ErrorPage as PageComponent,
+        context: context.errorServerContext,
+    },
+
+    [PageNames.NOT_FOUND]: {
+        component: Pages.ErrorPage as PageComponent,
+        context: context.errorNotFoundContext,
+    },
 };
-
-Object.entries(Components).forEach(([ name, template ]) => {
-    Handlebars.registerPartial(name, template);
-});
 
 function navigate(page: PageNames): void {
     const { component, context } = pages[page];
     const container = document.getElementById('app');
-    
+
     if (container) {
-        const template = Handlebars.compile(component);
-        container.innerHTML = template(context);
+        renderDom(new component(context) as Block);
     }
 }
 
-function route (e: Event): void {
+function route(e: Event): void {
     const target = e.target as HTMLElement;
     const to = target.getAttribute('data-to') as PageNames;
-    
+
     if (to) {
         navigate(to);
-        
+
         e.preventDefault();
         e.stopImmediatePropagation();
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => navigate('list'));
+document.addEventListener('DOMContentLoaded', () => navigate(PageNames.LIST));
 document.addEventListener('click', route);

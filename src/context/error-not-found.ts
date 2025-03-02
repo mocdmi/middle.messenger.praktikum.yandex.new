@@ -1,6 +1,8 @@
 import { ErrorContext } from './types/ErrorContext';
 
-export const errorNotFoundContext: ErrorContext = {
+const errorNotFoundContext: ErrorContext = {
     status: 404,
     message: 'Не туда попали',
-}
+};
+
+export default errorNotFoundContext;

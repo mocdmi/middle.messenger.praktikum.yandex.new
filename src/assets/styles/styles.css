@@ -7,18 +7,18 @@
     --font-size-l: 15px;
     --font-size-xl: 20px;
     --font-color: #1E1E1E;
-    --light-color: #FFFFFF;
+    --light-color: #FFF;
     --light-gray-color: #FBFBFB;
     --gray-color: #EFEFEF;
-    --dark-gray-color: #999999;
+    --dark-gray-color: #999;
     --primary-color: #3369F3;
-    --danger-color: #FF0000;
+    --danger-color: #F00;
     --active-group-color: #E4EDFD;
-    --dark-color: #000000;
+    --dark-color: #000;
 }
 
 body {
-    font-family: "Inter", serif;
+    font-family: Inter, serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;

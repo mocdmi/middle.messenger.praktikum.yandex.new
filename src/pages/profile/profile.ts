@@ -1,26 +1,19 @@
-import styles from './styles.module.css';
+import { Profile } from '../../components';
+import { ProfileContext } from '../../context/types/ProfileContext';
+import { Block } from '../../core';
+import ProfileInner from './parts/profile-inner';
 
-// language=Handlebars
-export default `
-{{#> Profile}}
-    <div class="${styles.detail}">
-        {{#each detail}}
-            <div class="${styles.row}">
-                <div class="${styles.label}">{{label}}</div>
-                <div class="${styles.value}">{{value}}</div>
-            </div>
-        {{/each}}
-    </div>
-    <nav>
-        <div class="${styles.row}">
-            {{> Link href="#" theme-default=true label="Изменить данные" }}
-        </div>
-        <div class="${styles.row}">
-            {{> Link href="#" theme-default=true label="Изменить пароль" }}
-        </div>
-        <div class="${styles.row}">
-            {{> Link href="#" theme-danger=true label="Выйти" }}
-        </div>
-    </nav>
-{{/Profile}}
-`;
+export default class ProfilePage extends Block<ProfileContext> {
+    constructor(props: ProfileContext) {
+        super('div', props, {
+            Profile: new Profile({
+                Children: new ProfileInner(props) as Block,
+            }) as Block,
+        });
+    }
+
+    // language=Handlebars
+    render(): string {
+        return '{{{Profile}}}';
+    }
+}

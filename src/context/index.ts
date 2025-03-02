@@ -1,4 +1,4 @@
-export { chatContext } from './chat';
-export { profileContext } from './profile';
-export { errorNotFoundContext } from './error-not-found';
-export { errorServerContext } from './error-server';
+export { default as chatContext } from './chat';
+export { default as profileContext } from './profile';
+export { default as errorNotFoundContext } from './error-not-found';
+export { default as errorServerContext } from './error-server';

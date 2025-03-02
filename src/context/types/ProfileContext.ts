@@ -3,7 +3,7 @@ export interface ProfileDetail {
     name: string;
     value: string;
     type: 'text' | 'password' | 'email';
-    required?: boolean;
+    required: boolean;
 }
 
 export interface ProfileContext {
