@@ -3,8 +3,7 @@ import { profileContext } from '../../../context';
 import { ProfileContext } from '../../../context/types/ProfileContext';
 import { Block } from '../../../core';
 import Validator from '../../../core/validator';
-import { isErrorsEmpty } from '../../../helpers/is-errors-empty';
-import { validateOnSubmit } from '../../../helpers/validate-on-submit';
+import { isErrorsEmpty, validateOnSubmit } from '../../../helpers';
 import styles from '../styles.module.css';
 
 interface EditFormProps extends ProfileContext {

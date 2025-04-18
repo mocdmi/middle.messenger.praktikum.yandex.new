@@ -1,6 +1,6 @@
 import { Link } from '../../../components';
+import { ROUTER } from '../../../const';
 import { Block } from '../../../core';
-import { PageNames } from '../../../types/page-names';
 import styles from '../styles.module.css';
 import SignInForm from './sign-in-form';
 
@@ -16,7 +16,7 @@ export default class PanelInner extends Block {
                 LoginLink: new Link({
                     'theme-default': true,
                     label: 'Войти',
-                    to: PageNames.LOGIN,
+                    to: ROUTER.login,
                 }) as Block,
             },
         );
@@ -25,7 +25,7 @@ export default class PanelInner extends Block {
     // language=Handlebars
     render(): string {
         return `
-            <h2 class="${styles.title}">Вход</h2>
+            <h2 class="${styles.title}">Регистрация</h2>
             {{{SignInForm}}}
             <div class="${styles.login}">
                 {{{LoginLink}}}

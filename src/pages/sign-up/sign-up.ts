@@ -3,7 +3,7 @@ import { Block } from '../../core';
 import PanelInner from './parts/panel-inner';
 import styles from './styles.module.css';
 
-export default class SignInPage extends Block {
+export default class SignUpPage extends Block {
     constructor() {
         super(
             'div',
@@ -19,7 +19,7 @@ export default class SignInPage extends Block {
     // language=Handlebars
     render(): string {
         return `
-            <main class="${styles.signIn}">
+            <main class="${styles.signUp}">
                 {{{Panel}}}
             </main>
         `;

@@ -1,7 +1,7 @@
 import { Block } from '../core';
 
 // TODO: Сделать более надежную реализацию, cейчас зависит от порядка инпутов
-export function validateOnSubmit(
+export default function validateOnSubmit(
     validators: ((value: string) => string)[],
     formState: object,
     errors: object,

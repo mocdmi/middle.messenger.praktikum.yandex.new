@@ -1,3 +1,4 @@
+import { ROUTER } from '../../const';
 import { ChatContext, Contact } from '../../context/types/ChatContext';
 import { Block } from '../../core';
 import { ContactCard } from '../contact-card';
@@ -20,7 +21,7 @@ export default class Contacts extends Block<ChatContext> {
                 ProfileLink: new Link({
                     'theme-default': true,
                     label: 'Профиль',
-                    to: 'profile',
+                    to: ROUTER.settings,
                     modificator: styles.link,
                 }) as Block,
                 SearchForm: new SearchForm() as Block,

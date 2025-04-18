@@ -1,5 +1,5 @@
-import { Block } from '../../core';
-import { PageNames } from '../../types/page-names';
+import { Block, Router } from '../../core';
+import { withRouter } from '../../helpers';
 import { Link } from '../link';
 import { ProfileAvatar } from '../profile-avatar';
 import styles from './styles.module.css';
@@ -7,9 +7,10 @@ import styles from './styles.module.css';
 interface ProfileProps {
     name?: string;
     Children: Block | Block[];
+    router?: Router;
 }
 
-export default class Profile extends Block<ProfileProps> {
+class Profile extends Block<ProfileProps> {
     constructor(props: ProfileProps) {
         super(
             'div',
@@ -22,8 +23,12 @@ export default class Profile extends Block<ProfileProps> {
                 Body: Array.isArray(props.Children) ? props.Children : [props.Children],
                 BackButton: new Link({
                     label: 'Back',
-                    to: PageNames.CHAT,
+                    href: '/',
                     modificator: styles.backLink,
+                    onClick: (e: Event) => {
+                        e.preventDefault();
+                        props.router?.back();
+                    },
                 }) as Block,
             },
         );
@@ -46,3 +51,5 @@ export default class Profile extends Block<ProfileProps> {
         `;
     }
 }
+
+export default withRouter(Profile);

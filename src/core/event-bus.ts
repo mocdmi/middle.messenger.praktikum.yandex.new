@@ -1,4 +1,4 @@
-export class EventBus {
+export default class EventBus {
     listeners: Record<string, ((...args: unknown[]) => void)[]>;
 
     constructor() {

@@ -1,8 +1,8 @@
-declare module '*.module.css' {
-    const classes: { [key: string]: string };
-    export default classes;
+import { Router } from './core';
+
+declare global {
+    interface Window {
+        router: Router;
+    }
 }
 
-declare module '*.css';
-
-declare module "*.svg";
