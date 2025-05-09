@@ -1,8 +1,7 @@
-export { ChatPage } from './chat';
-export { EditPasswordPage } from './edit-password';
-export { EditProfilePage } from './edit-profile';
+export { Messenger } from './messenger';
+export { EditPasswordPage } from './editPassword';
+export { EditProfilePage } from './editProfile';
 export { LoginPage } from './login';
-export { ListPage } from './list';
 export { ProfilePage } from './profile';
-export { SignInPage } from './sign-in';
-export { ErrorPage } from './error-page';
+export { SignUpPage } from './signUp';
+export { ErrorPage } from './errorPage';

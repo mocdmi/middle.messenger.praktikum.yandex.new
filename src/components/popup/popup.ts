@@ -1,4 +1,4 @@
-import { Block } from '../../core';
+import { Block } from '@core';
 import { Panel } from '../panel';
 import { PopupProps } from './types';
 import Inner from './parts/inner';
@@ -16,7 +16,7 @@ export default class Popup extends Block<PopupProps> {
                         const el = e.target as HTMLElement;
 
                         if (el.classList.contains(styles.substrate)) {
-                            props.handlerHidePopup();
+                            props.hidePopupHandler();
                         }
                     },
                 },

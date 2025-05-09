@@ -1,4 +1,4 @@
-export interface Contact {
+export interface IChat {
     name: string;
     lastMessage: string;
     date: string;
@@ -7,5 +7,5 @@ export interface Contact {
 }
 
 export interface ChatContext {
-    contacts: Contact[];
+    chats: IChat[];
 }

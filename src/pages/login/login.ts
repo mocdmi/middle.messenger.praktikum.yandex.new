@@ -1,6 +1,6 @@
-import { Panel } from '../../components';
-import { Block } from '../../core';
-import PanelInner from './parts/panel-inner';
+import { Panel } from '@components';
+import { Block } from '@core';
+import PanelInner from './parts/panelInner';
 import styles from './styles.module.css';
 
 export default class LoginPage extends Block {

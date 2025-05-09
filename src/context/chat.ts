@@ -1,6 +1,6 @@
-import { ChatContext, Contact } from './types/ChatContext';
+import { ChatContext, IChat } from './types/ChatContext';
 
-const contacts: Contact[] = [
+const contacts: IChat[] = [
     {
         name: 'Андрей',
         lastMessage: 'Изображение',
@@ -26,7 +26,7 @@ const contacts: Contact[] = [
 ];
 
 const chatContext: ChatContext = {
-    contacts,
+    chats: contacts,
 };
 
 export default chatContext;

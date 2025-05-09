@@ -1,17 +1,12 @@
 import Handlebars from 'handlebars';
-import { EventBus } from './event-bus';
+import { Attributes, EventBus } from '@core';
 
 type Children = Record<string, Block | Block[]>;
 
-type Attributes<T> = {
-    className?: string;
-    attrs?: T;
-    events?: {
-        [key: string]: (e: Event) => void;
-    };
-};
-
-export abstract class Block<T extends object = object, P extends object = object> {
+export default abstract class Block<
+    TProps extends object = object,
+    TAttrs extends object = object,
+> {
     private static EVENTS = {
         INIT: 'init',
         FLOW_CDM: 'flow:component-did-mount',
@@ -22,16 +17,16 @@ export abstract class Block<T extends object = object, P extends object = object
     private element: HTMLElement = document.createElement('div');
     private readonly meta: {
         tagName: string;
-        props: T & Attributes<P>;
+        props: TProps & Attributes<TAttrs>;
     };
     private readonly eventBus: EventBus = new EventBus();
-    protected readonly children: Children;
-    readonly props: T & Attributes<P>;
+    readonly children: Children;
+    readonly props: TProps & Attributes<TAttrs>;
     protected readonly id = crypto.randomUUID();
 
     protected constructor(
         tagName: string = 'div',
-        props: T & Attributes<P>,
+        props: TProps & Attributes<TAttrs>,
         children: Children = {},
     ) {
         this.children = children;
@@ -68,7 +63,9 @@ export abstract class Block<T extends object = object, P extends object = object
 
         if (props.attrs) {
             Object.entries(props.attrs).forEach(([attrName, attrValue]) => {
-                this.element.setAttribute(attrName, attrValue);
+                if (typeof attrValue === 'string') {
+                    this.element.setAttribute(attrName, attrValue);
+                }
             });
         }
     }
@@ -88,7 +85,7 @@ export abstract class Block<T extends object = object, P extends object = object
         this.eventBus.emit(Block.EVENTS.FLOW_CDM);
     }
 
-    private _componentDidUpdate(oldProps: T, newProps: T): void {
+    private _componentDidUpdate(oldProps: TProps, newProps: TProps): void {
         const response: boolean = this.componentDidUpdate(oldProps, newProps);
 
         if (!response) {
@@ -98,13 +95,13 @@ export abstract class Block<T extends object = object, P extends object = object
         this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
     }
 
-    componentDidUpdate(oldProps: T, newProps: T): boolean {
-        void oldProps;
-        void newProps;
+    componentDidUpdate(_oldProps: TProps, _newProps: TProps): boolean {
         return true;
     }
 
-    setProps = (nextProps: T): void => {
+    componentWillUnmount(): void {}
+
+    setProps = (nextProps: TProps): void => {
         if (!nextProps) {
             return;
         }
@@ -140,6 +137,7 @@ export abstract class Block<T extends object = object, P extends object = object
                     );
 
                     stub?.replaceWith(component.getContent());
+                    component.dispatchComponentDidMount();
                 });
             } else {
                 const stub: Element | null = fragment.content.querySelector(
@@ -147,6 +145,7 @@ export abstract class Block<T extends object = object, P extends object = object
                 );
 
                 stub?.replaceWith(child.getContent());
+                child.dispatchComponentDidMount();
             }
         });
 
@@ -173,18 +172,18 @@ export abstract class Block<T extends object = object, P extends object = object
         return this.element;
     }
 
-    private makePropsProxy(props: T): T {
-        return new Proxy<T>(props, {
-            get: (target: T, prop: PropertyKey) => {
-                const key = prop as keyof T;
-                const value: T[keyof T] = target[key];
+    private makePropsProxy(props: TProps): TProps {
+        return new Proxy<TProps>(props, {
+            get: (target: TProps, prop: PropertyKey) => {
+                const key = prop as keyof TProps;
+                const value: TProps[keyof TProps] = target[key];
 
                 return typeof value === 'function' ? value.bind(target) : value;
             },
 
-            set: (target: T, prop: PropertyKey, value): boolean => {
-                const key = prop as keyof T;
-                const oldTarget: T = { ...target };
+            set: (target: TProps, prop: PropertyKey, value): boolean => {
+                const key = prop as keyof TProps;
+                const oldTarget: TProps = { ...target };
 
                 target[key] = value;
                 this.eventBus.emit(Block.EVENTS.FLOW_CDU, oldTarget, target);
@@ -193,7 +192,7 @@ export abstract class Block<T extends object = object, P extends object = object
             },
 
             deleteProperty: (): never => {
-                throw new Error('Нет доступа');
+                throw new Error('No access to delete props');
             },
         });
     }

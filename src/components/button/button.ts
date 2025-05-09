@@ -1,4 +1,4 @@
-import { Block } from '../../core';
+import { Block } from '@core';
 import styles from './styles.module.css';
 
 type ButtonType = 'button' | 'submit' | 'reset';

@@ -1,4 +1,4 @@
-import { Block } from '../../../core';
+import { Block } from '@core';
 import { PopupProps } from '../types';
 import styles from '../styles.module.css';
 

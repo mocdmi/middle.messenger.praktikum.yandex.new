@@ -1,9 +1,9 @@
-import { Block } from '../../core';
+import { Block, Router } from '@core';
+import { withRouter } from '@helpers';
 import styles from './styles.module.css';
 
 interface LinkAttrs {
     href?: string;
-    'data-to'?: string;
 }
 
 interface LinkProps extends LinkAttrs {
@@ -12,10 +12,12 @@ interface LinkProps extends LinkAttrs {
     label: string;
     to?: string;
     href?: string;
+    router?: Router;
     modificator?: string;
+    onClick?: (e: Event) => void;
 }
 
-export default class Link extends Block<LinkProps, LinkAttrs> {
+class Link extends Block<LinkProps, LinkAttrs> {
     constructor(props: LinkProps) {
         super('a', {
             ...props,
@@ -25,13 +27,22 @@ export default class Link extends Block<LinkProps, LinkAttrs> {
                 ${props['theme-danger'] ? styles.themeDanger : ''}
                 ${props.modificator ? props.modificator : ''}
             `,
-            attrs: (() => {
-                if (props.to) {
-                    return { 'data-to': props.to, href: `#${props.to}` };
-                } else {
-                    return { href: props.href };
-                }
-            })(),
+            attrs: {
+                href: props.href ?? props.to,
+            },
+            events: {
+                click: (e: Event) => {
+                    if (props.onClick) {
+                        props.onClick(e);
+                        return;
+                    }
+
+                    if (props.to) {
+                        e.preventDefault();
+                        props.router?.go(props.to);
+                    }
+                },
+            },
         });
     }
 
@@ -40,3 +51,5 @@ export default class Link extends Block<LinkProps, LinkAttrs> {
         return '{{label}}';
     }
 }
+
+export default withRouter(Link);

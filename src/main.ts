@@ -1,72 +1,40 @@
+import { ROUTER } from '@const';
 import * as context from './context';
-import { Block } from './core';
-import { renderDom } from './core/render-dom';
-import * as Pages from './pages';
-import './assets/styles/styles.css';
-import { PageNames } from './types/page-names';
+import { Router, Store } from '@core';
+import * as Pages from '@pages';
+import '@assets/styles/styles.css';
+import { AppStore } from '@types';
+import { ChatContext } from './context/types/ChatContext';
+import { ErrorContext } from './context/types/ErrorContext';
 
-type PageComponent = new (context?: object) => Block;
-
-type PagesConfig = Record<
-    PageNames,
-    {
-        component: PageComponent;
-        context?: object;
-    }
->;
-
-const pages: PagesConfig = {
-    [PageNames.LOGIN]: { component: Pages.LoginPage as PageComponent },
-    [PageNames.LIST]: { component: Pages.ListPage as PageComponent },
-    [PageNames.CHAT]: { component: Pages.ChatPage as PageComponent, context: context.chatContext },
-    [PageNames.SIGN_IN]: { component: Pages.SignInPage },
-
-    [PageNames.EDIT_PASSWORD]: {
-        component: Pages.EditPasswordPage as PageComponent,
-        context: context.profileContext,
+Store.getInstance().createStore<AppStore>({
+    user: {
+        isLoading: false,
+        isError: '',
+        user: null,
     },
-
-    [PageNames.EDIT_PROFILE]: {
-        component: Pages.EditProfilePage as PageComponent,
-        context: context.profileContext,
+    chats: {
+        isLoading: false,
+        isError: '',
+        chats: null,
     },
-
-    [PageNames.PROFILE]: {
-        component: Pages.ProfilePage as PageComponent,
-        context: context.profileContext,
+    selectedChat: {
+        isLoading: false,
+        isError: '',
+        chat: null,
+        users: null,
     },
+});
 
-    [PageNames.SERVER_ERROR]: {
-        component: Pages.ErrorPage as PageComponent,
-        context: context.errorServerContext,
-    },
+const router = Router.getInstance().createApp('#app');
 
-    [PageNames.NOT_FOUND]: {
-        component: Pages.ErrorPage as PageComponent,
-        context: context.errorNotFoundContext,
-    },
-};
-
-function navigate(page: PageNames): void {
-    const { component, context } = pages[page];
-    const container = document.getElementById('app');
-
-    if (container) {
-        renderDom(new component(context) as Block);
-    }
-}
-
-function route(e: Event): void {
-    const target = e.target as HTMLElement;
-    const to = target.getAttribute('data-to') as PageNames;
-
-    if (to) {
-        navigate(to);
-
-        e.preventDefault();
-        e.stopImmediatePropagation();
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => navigate(PageNames.LIST));
-document.addEventListener('click', route);
+router
+    .use<ChatContext>(ROUTER.messenger, Pages.Messenger, context.chatContext)
+    .use(ROUTER.editPassword, Pages.EditPasswordPage)
+    .use(ROUTER.editProfile, Pages.EditProfilePage)
+    .use(ROUTER.login, Pages.LoginPage)
+    .use(ROUTER.settings, Pages.ProfilePage)
+    .use(ROUTER.signUp, Pages.SignUpPage)
+    .use<ErrorContext>('/404', Pages.ErrorPage, context.errorNotFoundContext)
+    .use<ErrorContext>('/500', Pages.ErrorPage, context.errorServerContext)
+    .start();
