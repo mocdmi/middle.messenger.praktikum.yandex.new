@@ -1,4 +1,5 @@
 import { API_URL } from '@/const';
+import { HttpTransportResponse } from '@/types';
 
 interface Options<TReq> extends Partial<XMLHttpRequest> {
     headers?: Record<string, string>;
@@ -7,19 +8,12 @@ interface Options<TReq> extends Partial<XMLHttpRequest> {
     method?: string;
 }
 
-interface Response<TResp> {
-    headers: Record<string, string>;
-    status: number;
-    statusText: string;
-    response: TResp;
-}
-
 type Body = string | Blob | ArrayBuffer | ArrayBufferView | FormData | URLSearchParams | null;
 
 type HTTPMethod = <TReq = void, TResp = void>(
     url: string,
     options?: Options<TReq>,
-) => Promise<Response<TResp>>;
+) => Promise<HttpTransportResponse<TResp>>;
 
 export default class HttpTransport {
     private readonly baseUrl: string;
@@ -69,7 +63,7 @@ export default class HttpTransport {
     private request<TReq, TResp>(
         url: string,
         options: Options<TReq> = {},
-    ): Promise<Response<TResp>> {
+    ): Promise<HttpTransportResponse<TResp>> {
         const { headers = {}, data, method = HttpTransport.METHODS.GET, ...xhrOptions } = options;
         const isGet: boolean = method === HttpTransport.METHODS.GET;
         const fullUrl = `${this.baseUrl}${url}`;
@@ -126,7 +120,7 @@ export default class HttpTransport {
                         .getAllResponseHeaders()
                         .trim()
                         .split(/\r\n/)
-                        .reduce((acc: Record<string, string>, item) => {
+                        .reduce((acc: Record<string, string>, item: string) => {
                             const [key, value] = item.split(': ');
                             acc[key] = value;
                             return acc;
@@ -137,9 +131,9 @@ export default class HttpTransport {
                 });
             };
 
-            xhr.onerror = (): void => reject('Ошибка соединения');
-            xhr.onabort = (): void => reject('Запрос прерван');
-            xhr.ontimeout = (): void => reject('Таймаут');
+            xhr.onerror = (): void => reject(new Error('Ошибка соединения'));
+            xhr.onabort = (): void => reject(new Error('Запрос прерван'));
+            xhr.ontimeout = (): void => reject(new Error('Таймаут'));
         });
     }
 }

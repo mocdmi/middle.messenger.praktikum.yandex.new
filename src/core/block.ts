@@ -1,3 +1,4 @@
+import { isEqual } from '@/helpers';
 import Handlebars from 'handlebars';
 import { EventBus } from '@/core';
 import { Attributes } from '@/types';
@@ -76,6 +77,10 @@ export default abstract class Block<
         this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
     }
 
+    getEventBus(): EventBus {
+        return this.eventBus;
+    }
+
     private _componentDidMount(): void {
         this.componentDidMount();
     }
@@ -96,8 +101,8 @@ export default abstract class Block<
         this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
     }
 
-    componentDidUpdate(_oldProps: TProps, _newProps: TProps): boolean {
-        return true;
+    componentDidUpdate(oldProps: TProps, newProps: TProps): boolean {
+        return !isEqual(oldProps, newProps);
     }
 
     componentWillUnmount(): void {}
@@ -161,6 +166,8 @@ export default abstract class Block<
 
         const block: DocumentFragment = this.compile();
 
+        this.element.textContent = '';
+
         if (this.element.children.length === 0) {
             this.element.appendChild(block);
         } else {
@@ -186,12 +193,7 @@ export default abstract class Block<
             },
 
             set: (target: TProps, prop: PropertyKey, value): boolean => {
-                const key = prop as keyof TProps;
-                const oldTarget: TProps = { ...target };
-
-                target[key] = value;
-                this.eventBus.emit(Block.EVENTS.FLOW_CDU, oldTarget, target);
-
+                target[prop as keyof TProps] = value;
                 return true;
             },
 

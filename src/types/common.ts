@@ -28,3 +28,10 @@ export type WebsocketLog = {
     type: string;
     message: string;
 };
+
+export interface HttpTransportResponse<TResp> {
+    headers: Record<string, string>;
+    status: number;
+    statusText: string;
+    response: TResp;
+}
